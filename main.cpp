@@ -1,65 +1,78 @@
+#include "MyMath.h"
 #include <Novice.h>
 
 const char kWindowTitle[] = "LC1A_16_タナハラ_コア_タイトル";
 
-struct Vector2 {
-	float x;
-	float y;
-};
-
 //==============================
-//関数定義
+// 関数定義
 //==============================
 
 // Windowsアプリでのエントリーポイント(main関数)
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+{
 
-	// ライブラリの初期化
-	Novice::Initialize(kWindowTitle, 1280, 720);
+    // ライブラリの初期化
+    Novice::Initialize(kWindowTitle, 1280, 720);
 
-	// キー入力結果を受け取る箱
-	char keys[256] = {0};
-	char preKeys[256] = {0};
+    // キー入力結果を受け取る箱
+    char keys[256] = { 0 };
+    char preKeys[256] = { 0 };
 
-	//==============================
-	// 変数初期化
-	//==============================
+    //==============================
+    // 変数初期化
+    //==============================
 
-	// ウィンドウの×ボタンが押されるまでループ
-	while (Novice::ProcessMessage() == 0) {
-		// フレームの開始
-		Novice::BeginFrame();
+    Matrix4x4 orthographicMatrix = MakeOrthographicMatrix(-160.0f, 160.0f, 200.0f, 300.0f, 0.0f, 1000.0f);
 
-		// キー入力を受け取る
-		memcpy(preKeys, keys, 256);
-		Novice::GetHitKeyStateAll(keys);
+    Matrix4x4 perspectiveFovMatrix = MakePerspectiveFovMatrix(0.63f, 1.33f, 0.1f, 1000.0f);
 
-		///
-		/// ↓更新処理ここから
-		///
+    Matrix4x4 viewportMatrix = MakeViewportMatrix(100.0f, 200.0f, 600.0f, 300.0f, 0.0f, 1.0f);
 
-		///
-		/// ↑更新処理ここまで
-		///
+    // ウィンドウの×ボタンが押されるまでループ
+    while (Novice::ProcessMessage() == 0) {
+        // フレームの開始
+        Novice::BeginFrame();
 
-		///
-		/// ↓描画処理ここから
-		///
+        // キー入力を受け取る
+        memcpy(preKeys, keys, 256);
+        Novice::GetHitKeyStateAll(keys);
 
-		///
-		/// ↑描画処理ここまで
-		///
+        ///
+        /// ↓更新処理ここから
+        ///
 
-		// フレームの終了
-		Novice::EndFrame();
+        ///
+        /// ↑更新処理ここまで
+        ///
 
-		// ESCキーが押されたらループを抜ける
-		if (preKeys[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE] != 0) {
-			break;
-		}
-	}
+        ///
+        /// ↓描画処理ここから
+        ///
 
-	// ライブラリの終了
-	Novice::Finalize();
-	return 0;
+        Novice::ScreenPrintf(0, 0, "OrthographicMatrix");
+        MatrixScreenPrintf(0, kRowHeight, orthographicMatrix);
+
+
+        Novice::ScreenPrintf(0, kRowHeight * 8, "perspectiveFovMatrix");
+        MatrixScreenPrintf(0, kRowHeight * 9, perspectiveFovMatrix);
+
+        Novice::ScreenPrintf(0, kRowHeight * 15, "viewportMatrix");
+        MatrixScreenPrintf(0, kRowHeight * 16, viewportMatrix);
+
+        ///
+        /// ↑描画処理ここまで
+        ///
+
+        // フレームの終了
+        Novice::EndFrame();
+
+        // ESCキーが押されたらループを抜ける
+        if (preKeys[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE] != 0) {
+            break;
+        }
+    }
+
+    // ライブラリの終了
+    Novice::Finalize();
+    return 0;
 }
